@@ -396,6 +396,7 @@ function initPainting(key) {
 
     if (!p.el.dataset.paintingLoaded && p._decodedSrc) {
       p.el.style.backgroundImage = `url("${p._decodedSrc}")`;
+      p.el.style.backgroundPositionY = p.pos;
       p.el.dataset.paintingLoaded = 'true';
     }
 
@@ -451,6 +452,15 @@ function onPaintingScroll(key) {
   const progress = -rect.top / window.innerHeight;
   const y = Math.min(Math.max(progress * 28, 0), 40);
   p.el.style.backgroundPositionY = 'calc(' + p.pos + ' + ' + y + 'px)';
+}
+
+// Keep the teen hero framing tied to the desktop breakpoint live: when the
+// viewport crosses 1100px in either direction, re-apply the base position at
+// the current parallax offset (amplitude and formula unchanged).
+if (typeof teenPosMq !== 'undefined') {
+  const syncTeenPos = e => { paintings.teen.pos = e.matches ? '12%' : '30%'; onPaintingScroll('teen'); };
+  if (teenPosMq.addEventListener) teenPosMq.addEventListener('change', syncTeenPos);
+  else if (teenPosMq.addListener) teenPosMq.addListener(syncTeenPos);
 }
 function cleanPainting() {
   for (const k in paintings) {

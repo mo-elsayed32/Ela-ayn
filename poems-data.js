@@ -160,8 +160,9 @@ const flashCorners = [
   { top:'5rem',    left:'2rem',  right:'auto', bottom:'auto' },
 ];
 
+const teenPosMq = window.matchMedia('(min-width: 1100px)');
 const paintings = {
-  teen:   { el: null, pos: '30%' },
+  teen:   { el: null, pos: teenPosMq.matches ? '12%' : '30%' },
   lahyaa: { el: null, pos: '25%' },
   qadiya: { el: null, pos: '30%' },
 };
