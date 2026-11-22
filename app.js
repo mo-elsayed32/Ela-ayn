@@ -129,6 +129,7 @@ function goTo(page, options = {}) {
     document.querySelectorAll('.page').forEach(p => {
       p.classList.remove('active');
       p.style.cssText = '';
+      p._enterToken = null;
     });
     const target = document.getElementById('page-' + page);
     if (!target) return;
@@ -141,6 +142,30 @@ function goTo(page, options = {}) {
         target.style.opacity = '1';
         target.style.transform = 'translateY(0)';
       }));
+      /* بعد نهاية حركة الدخول امسح الـ transition والـ transform المؤقتين:
+         translateY(0) المحفوظ بيخلي الصفحة containing block لأي عنصر fixed
+         جواها (نافذة «اكتشف نصّك» وزرارها وعلامة الاستفهام)، فبتتموضع بالنسبة
+         لجسم الصفحة الطويل بدل الشاشة وبتختفي من مجال الرؤية.
+         التنضيف مربوط بـ token لكل تنشيط عشان تنضيف متأخر من تنقل أقدم
+         ميأثرش على حركة أحدث لنفس الصفحة (خروج ورجوع سريع). */
+      const enterToken = {};
+      target._enterToken = enterToken;
+      const clearEnterStyles = () => {
+        if (target._enterToken !== enterToken) return;
+        target._enterToken = null;
+        target.style.transition = '';
+        target.style.transform = '';
+      };
+      const onEnterTransitionEnd = (e) => {
+        if (e.target !== target || e.propertyName !== 'transform') return;
+        target.removeEventListener('transitionend', onEnterTransitionEnd);
+        clearEnterStyles();
+      };
+      target.addEventListener('transitionend', onEnterTransitionEnd);
+      setTimeout(() => {
+        target.removeEventListener('transitionend', onEnterTransitionEnd);
+        clearEnterStyles();
+      }, 500);
     }
     const destinationY = Number.isFinite(restoreScrollY) ? restoreScrollY : 0;
     // Wait for the newly activated page to participate in layout before restoring scroll.
@@ -159,6 +184,9 @@ function goTo(page, options = {}) {
 
   if (immediate || !current) activate();
   else {
+    /* أبطل أي تنضيف معلّق من حركة دخول سابقة لنفس الصفحة قبل بدء خروجها،
+       عشان مهلة احتياطية أو مستمع قديم ميمسحش ستايلات الخروج في نص حركتها. */
+    current._enterToken = null;
     current.style.transition = 'opacity .28s ease, transform .28s ease';
     current.style.opacity = '0';
     current.style.transform = 'translateY(-8px)';
