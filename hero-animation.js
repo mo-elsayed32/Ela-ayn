@@ -11,6 +11,8 @@ function showHeroImage(){
 function finishHeroEntrance(){
  heroEntranceCanceled=true;
  clearTimeout(window.heroSafetyTimer);
+ if(cancelHeroButtonReveal)cancelHeroButtonReveal();
+ heroRoot.classList.remove('hero-choreography');
  const cta=document.getElementById('h-discover'),sub=document.getElementById('h-snap-sub');if(cta)cta.style.visibility='';if(sub)sub.style.visibility='';
  heroRoot.classList.remove('hero-sequence-pending','hero-title-pending');
  showHeroImage();
@@ -41,20 +43,82 @@ async function playHeroEntrance(){
  });
  await heroDelay(500);if(heroEntranceCanceled)return;
  heroRoot.classList.remove('hero-sequence-pending');
- const rest=document.querySelectorAll('#nav,.hero > :not(.h-content),.h-eyebrow,.h-divider');
- rest.forEach(el=>el.classList.add('hero-sequence-enter'));
- document.querySelectorAll('.h-eyebrow,.h-divider,.n-logo,.n-links a').forEach(el=>el.style.opacity='1');
- const cta=document.getElementById('h-discover'),sub=document.getElementById('h-snap-sub');
- // Keep CTA hidden until the 700ms entrance and separate 700ms pause finish.
- cta.style.visibility='hidden';sub.style.visibility='hidden';
- await heroDelay(1400);if(heroEntranceCanceled)return;
- cta.style.visibility='';sub.style.visibility='';cta.style.opacity='1';sub.style.opacity='1';
- cta.classList.add('hero-cta-enter');sub.classList.add('hero-cta-enter');
- document.getElementById('glass-disc-btn').style.opacity='1';
+ heroRoot.classList.add('hero-choreography');
+ const step=async(name,delay)=>{
+  if(heroEntranceCanceled)return false;
+  heroRoot.classList.add('hero-stage-'+name);
+  await heroDelay(reduce?0:delay);
+  return !heroEntranceCanceled;
+ };
+ document.querySelector('.h-divider').style.opacity='1';
+ if(!await step('project',850))return;
+ document.querySelector('.h-eyebrow').style.opacity='1';
+ if(!await step('author',1000))return;
  document.querySelector('.glass-disc-label').textContent='اكتشف نصًّا';
- clearTimeout(window.heroSafetyTimer);
+ document.getElementById('glass-disc-btn').style.opacity='1';
+ document.getElementById('h-discover').style.opacity='1';
+ if(!await step('button',0))return;
+ if(!reduce)await revealHeroButton();
+ if(heroEntranceCanceled)return;
+ await heroDelay(reduce?0:300);if(heroEntranceCanceled)return;
+ document.querySelectorAll('.n-logo,.n-links a').forEach(el=>el.style.opacity='1');
+ document.getElementById('h-qmark').style.opacity='.12';
+ if(!await step('scene',1100))return;
+ document.getElementById('h-snap-sub').style.opacity='1';
  startSnapCycle();
+ if(!await step('words',1000))return;
+ if(!await step('letters',1200))return;
+ clearTimeout(window.heroSafetyTimer);
+ heroRoot.classList.remove('hero-choreography');
 }
+
+// Temporary, alpha-bounded raster of the approved button during its entrance.
+// The real semantic button remains in the DOM and returns when the effect ends.
+let cancelHeroButtonReveal=null;
+async function revealHeroButton(){
+ const btn=document.getElementById('glass-disc-btn'),host=document.getElementById('h-discover');
+ const rect=btn.getBoundingClientRect(),parent=host.getBoundingClientRect();
+ const canvas=document.createElement('canvas');canvas.className='hero-button-pixels';canvas.setAttribute('aria-hidden','true');
+ Object.assign(canvas.style,{width:rect.width+'px',height:rect.height+'px',left:(rect.left-parent.left)+'px',top:(rect.top-parent.top)+'px'});
+ const img=new Image();img.src='assets/hero-button-'+document.documentElement.dataset.theme+(innerWidth>480?'-wide':'')+'.png';
+ try{await Promise.race([img.decode(),heroDelay(1200).then(()=>{throw new Error('button image timeout')})]);}
+ catch(e){return;}
+ if(heroEntranceCanceled)return;
+ canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
+ const ctx=canvas.getContext('2d');if(!ctx)return;
+ ctx.drawImage(img,0,0,canvas.width,canvas.height);
+ let src;try{src=ctx.getImageData(0,0,canvas.width,canvas.height)}catch(e){return;}
+ const out=ctx.createImageData(canvas.width,canvas.height),W=canvas.width,H=canvas.height;
+ const theme=document.documentElement.dataset.theme;
+ host.appendChild(canvas);btn.style.visibility='hidden';
+ await new Promise(resolve=>{
+  let raf=0,done=false;const start=performance.now();
+  const cleanup=()=>{
+   if(done)return;done=true;cancelAnimationFrame(raf);clearTimeout(safety);
+   window.removeEventListener('resize',cleanup);btn.removeEventListener('focus',cleanup);
+   canvas.remove();btn.style.visibility='';cancelHeroButtonReveal=null;resolve();
+  };
+  const safety=setTimeout(cleanup,2400);cancelHeroButtonReveal=cleanup;
+  window.addEventListener('resize',cleanup,{once:true});btn.addEventListener('focus',cleanup,{once:true});
+  function frame(now){
+   if(heroEntranceCanceled||theme!==document.documentElement.dataset.theme){cleanup();return;}
+   const t=(now-start)/1000;
+   for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+    const n=(y*W+x)*4,a=src.data[n+3];if(!a)continue;
+    const noise=(Math.sin(x*.18+y*.11)+Math.sin(y*.38-x*.06))*.035;
+    const age=t-(1-x/W+noise)*1.35;
+    const reveal=Math.max(0,Math.min(1,age/.045)),heat=age<0?0:Math.max(0,1-age/.32);
+    out.data[n]=src.data[n]*(1-heat)+255*heat;
+    out.data[n+1]=src.data[n+1]*(1-heat)+205*heat;
+    out.data[n+2]=src.data[n+2]*(1-heat)+101*heat;
+    out.data[n+3]=Math.max(a,200*heat)*reveal;
+   }
+   ctx.putImageData(out,0,0);
+   if(t<1.85)raf=requestAnimationFrame(frame);else cleanup();
+  }raf=requestAnimationFrame(frame);
+ });
+}
+
 async function startHeroGoldSparkles(){
  const canvas=document.getElementById('gold-sparks'),ctx=canvas.getContext('2d');
  const source=document.querySelector('#calligraphy image');
