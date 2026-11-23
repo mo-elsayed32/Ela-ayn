@@ -1959,3 +1959,29 @@ html.hero-title-pending .h-title { visibility:hidden; }
  [data-theme="light"] .h-bg { background:radial-gradient(ellipse 80% 55% at 69% 42%,rgba(255,247,222,.85),transparent 80%),linear-gradient(118deg,rgba(38,51,48,.32),transparent 55%),linear-gradient(162deg,transparent 54%,rgba(61,70,63,.17) 55%,rgba(61,70,63,.04) 83%,transparent 84%); }
 }
 @media(min-width:1100px){ .h-qmark { font-size:178vh;left:-9vw;top:-5vh; } }
+
+/* Approved staged hero entrance. */
+.hero-choreography .h-divider,.hero-choreography .h-eyebrow,
+.hero-choreography #h-discover,.hero-choreography #h-snap-sub,
+.hero-choreography #nav,.hero-choreography .h-bg,.hero-choreography .h-rules,
+.hero-choreography .h-qmark,.hero-choreography .h-letters {visibility:hidden;}
+.hero-stage-project .h-divider{visibility:visible;animation:hero-detail-enter .7s both;}
+.hero-stage-author .h-eyebrow{visibility:visible;animation:hero-detail-enter .7s both;}
+.hero-stage-button #h-discover{visibility:visible;}
+@media(max-width:1099px){.hero-choreography #h-discover{position:relative;}}
+.hero-stage-scene #nav,.hero-stage-scene .h-bg,.hero-stage-scene .h-rules{visibility:visible;animation:hero-detail-enter 1s both;}
+.hero-stage-scene .h-qmark{visibility:visible;animation:hero-question-enter 1s both;}
+.hero-stage-words #h-snap-sub{visibility:visible;animation:hero-detail-enter .6s both;}
+.hero-stage-letters .h-letters{visibility:visible;animation:hero-detail-enter 1.2s both;}
+.hero-button-pixels{position:absolute;pointer-events:none;z-index:8;}
+@keyframes hero-detail-enter{from{opacity:0;filter:blur(3px)}to{opacity:1;filter:blur(0)}}
+@media(prefers-reduced-motion:reduce){
+ .hero-stage-project .h-divider,.hero-stage-author .h-eyebrow,.hero-stage-scene #nav,
+ .hero-stage-scene .h-bg,.hero-stage-scene .h-rules,.hero-stage-scene .h-qmark,
+ .hero-stage-words #h-snap-sub,.hero-stage-letters .h-letters{animation:none;}
+}
+
+/* Desktop CTA: retain X, center its own box vertically. */
+@media(min-width:1100px){
+ .h-discover{top:50vh;bottom:auto;transform:translateY(-50%);}
+}
