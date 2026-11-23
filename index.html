@@ -22,6 +22,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Tajawal:wght@300;400;500&display=swap" rel="stylesheet">
+<script>
+  document.documentElement.classList.add('hero-sequence-pending','hero-title-pending');
+  // Release a stalled entrance instead of leaving navigation hidden.
+  window.heroSafetyTimer = setTimeout(function () {
+    if (typeof finishHeroEntrance === 'function') finishHeroEntrance();
+    else document.documentElement.classList.remove('hero-sequence-pending','hero-title-pending');
+  }, 20000);
+</script>
+<link rel="preload" as="image" href="assets/hero-calligraphy.jpg">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -54,8 +63,8 @@
     <div class="h-letters" id="h-ltrs"></div>
     <div class="h-qmark" id="h-qmark" style="opacity:0;">؟</div>
     <div class="h-content">
-      <div class="h-eyebrow" id="h-eyebrow">مشروع أدبي لمحمد السيد</div>
-      <h1 class="h-title" id="h-title">إلى <span class="hl" id="h-qm">أين</span><span id="h-qm-mark" style="opacity:0;display:inline;">؟</span></h1>
+      <div class="h-eyebrow" id="h-eyebrow">لمحمد السيد</div>
+      <h1 class="h-title" id="h-title" aria-label="إلى أين؟"><svg id="calligraphy" aria-hidden="true" viewBox="100 0 950 614" role="img" aria-label="إلى أين؟"><defs><filter id="hero-black-alpha"><feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1 0 0 0 0"/><feComponentTransfer><feFuncA type="linear" slope="8" intercept="-.1"/></feComponentTransfer></filter><mask id="hero-black-remove" maskUnits="userSpaceOnUse" x="0" y="0" width="1226" height="614"><image href="assets/hero-calligraphy.jpg" width="1226" height="614" filter="url(#hero-black-alpha)"/></mask><mask id="trace-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="1236" height="631"><g fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round"><path class="ink-trace" d="M 916 172 C 950 220 998 290 978 369 C 966 431 921 473 871 514" stroke-width="73.1" data-a="0" data-b="0.25" /><path class="ink-trace" d="M 915 171 C 900 219 941 325 947 387 C 956 442 908 468 855 477" stroke-width="54.4" data-a="0.17" data-b="0.34" /><path class="ink-trace" d="M 802 52 C 803 16 821 100 833 132 C 851 192 813 245 785 286 C 749 338 787 355 821 379 C 859 410 853 461 818 479 C 769 511 713 482 711 432 C 705 359 741 258 768 229" stroke-width="61.199999999999996" data-a="0.3" data-b="0.79" /><path class="ink-trace" d="M 957 485 C 980 470 964 497 947 504 L 969 508 C 963 523 948 535 937 540" stroke-width="39.1" data-a="0.77" data-b="0.87" /><path class="ink-trace" d="M 568 283 C 606 325 663 391 646 455 C 634 510 586 569 537 583" stroke-width="73.1" data-a="0.87" data-b="1.1" /><path class="ink-trace" d="M 565 284 C 574 363 606 453 618 505" stroke-width="49.3" data-a="1.02" data-b="1.18" /><path class="ink-trace" d="M 488 325 C 525 331 516 388 486 397 C 465 403 442 395 434 384 C 442 425 481 442 453 492 C 427 543 371 528 345 504 C 294 457 330 401 356 365 C 400 301 451 220 470 156 L 481 91" stroke-width="66.3" data-a="1.14" data-b="1.53" /><path class="ink-trace" d="M 477 150 C 462 237 404 290 325 313 L 274 323" stroke-width="47.6" data-a="1.42" data-b="1.62" /><path class="ink-trace" d="M 554 188 C 566 171 560 199 544 205 C 524 216 547 222 563 221 C 555 230 542 236 531 239" stroke-width="40.8" data-a="1.58" data-b="1.68" /><path class="ink-trace" d="M 491 481 L 512 484" stroke-width="51.0" data-a="1.65" data-b="1.74" /><path class="ink-trace" d="M 390 426 L 404 434" stroke-width="47.6" data-a="1.7" data-b="1.78" /><path class="ink-trace" d="M 238 427 C 239 397 213 376 184 354 C 142 322 147 276 175 252 C 204 223 243 237 241 268 C 240 293 211 310 208 299" stroke-width="64.6" data-a="1.78" data-b="1.96" /><path class="ink-trace" d="M 262 482 L 262 493" stroke-width="54.4" data-a="1.96" data-b="2.0" /></g></mask></defs><g id="hero-gold-treatment"><image id="hero-gold-image" href="assets/hero-calligraphy.jpg" width="1226" height="614" /></g></svg><canvas id="gold-sparks" width="950" height="614" aria-hidden="true"></canvas><span class="hero-title-fallback">إلى أين؟</span></h1>
       <div class="h-divider" id="h-divider">
         <div class="h-divider-line"></div>
         <span>مشروع سؤال</span>
@@ -691,6 +700,7 @@
 </div>
 
 <script src="poems-data.js"></script>
+<script src="hero-animation.js"></script>
 <script src="app.js"></script>
 
 <!-- تلميح الوضع الليلي -->

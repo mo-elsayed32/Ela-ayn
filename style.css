@@ -1906,3 +1906,56 @@ button.env-pocket-item {
 @media (prefers-reduced-motion: reduce) {
   #flash-card { transition-duration: .01ms; }
 }
+
+/* Approved hero lettering and staged entrance. No section-scroll changes. */
+.h-title { position:relative; width:min(440px,75vw); font-size:0; line-height:1; opacity:1; transform:none; margin-bottom:0; }
+#calligraphy { width:100%; height:auto; display:block; }
+#gold-sparks { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; mix-blend-mode:screen; }
+.h-content { mix-blend-mode:screen; }
+[data-theme="light"] .h-content { mix-blend-mode:normal; }
+.h-eyebrow { margin-bottom:1.7rem; }
+.hero-title-fallback { display:none; font:clamp(4rem,11vw,9rem)/1.2 'Amiri',serif; color:var(--gold); }
+.h-title.image-unavailable #calligraphy,.h-title.image-unavailable #gold-sparks { display:none; }
+.h-title.image-unavailable .hero-title-fallback { display:block; }
+@media(max-width:1099px){ .h-title{width:min(440px,82vw)} .h-content{width:100%} }
+@media(min-width:1100px){ .h-content{top:25vh;right:12vw} }
+.ink-trace { --length:3000; stroke-dasharray:var(--length); stroke-dashoffset:var(--length); }
+html.hero-sequence-pending #nav,html.hero-sequence-pending #cur,html.hero-sequence-pending #cur-r,html.hero-sequence-pending #prog,
+html.hero-sequence-pending .hero > :not(.h-content),html.hero-sequence-pending .h-eyebrow,html.hero-sequence-pending .h-divider,
+html.hero-sequence-pending .h-discover,html.hero-sequence-pending .h-snap-sub,html.hero-sequence-pending #page-home > section:not(.hero),
+html.hero-sequence-pending #page-home > .marquee-wrap { visibility:hidden; opacity:0!important; }
+html.hero-title-pending .h-title { visibility:hidden; }
+.hero-sequence-enter { animation:hero-rest-enter .7s ease both; }
+.hero-cta-enter { animation:hero-cta-enter .65s ease both; }
+@keyframes hero-rest-enter { from{opacity:0}to{opacity:1} }
+@keyframes hero-cta-enter { from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)} }
+@media(prefers-reduced-motion:reduce){ .hero-sequence-enter,.hero-cta-enter{animation:none} }
+/* Background question stays subtle when the rest of the scene enters. */
+.h-qmark.hero-sequence-enter { animation:hero-question-enter .7s ease both; }
+@keyframes hero-question-enter { from{opacity:0}to{opacity:.025} }
+
+[data-theme="light"] #hero-gold-treatment { mask:url(#hero-black-remove); }
+
+/* Approved light hero: limestone with long, cool shadows. */
+[data-theme="light"] .hero { background:#d5d2c7; }
+[data-theme="light"] .h-bg {
+ background:
+  radial-gradient(ellipse 52% 75% at 78% 37%,rgba(255,247,222,.87) 0%,rgba(246,238,213,.42) 42%,transparent 76%),
+  linear-gradient(118deg,rgba(38,51,48,.37) 0%,rgba(48,59,54,.26) 24%,transparent 48%,transparent 72%,rgba(51,62,56,.2) 100%),
+  linear-gradient(164deg,transparent 0%,transparent 49%,rgba(61,70,63,.16) 50%,rgba(61,70,63,.04) 68%,transparent 69%);
+}
+.h-qmark { opacity:.12; }
+[data-theme="light"] .h-qmark { color:#37433d; opacity:.13; }
+[data-theme="light"] .h-rules span { background:linear-gradient(to bottom,transparent,rgba(49,61,53,.11) 35%,rgba(49,61,53,.11) 65%,transparent); }
+[data-theme="light"] .h-eyebrow,[data-theme="light"] .h-divider { color:#51432d; }
+[data-theme="light"] .glass-disc-btn { background:rgba(245,238,218,.36);border-color:rgba(74,61,40,.35);box-shadow:0 10px 36px rgba(45,50,42,.1),inset 0 1px rgba(255,255,240,.65); }
+@keyframes hero-question-enter { from{opacity:0}to{opacity:.12} }
+@keyframes floatL { 0% {opacity:0;transform:translateY(0) rotate(0deg)} 10% {opacity:.14} 90% {opacity:.09} 100% {opacity:0;transform:translateY(-115vh) rotate(12deg)} }
+@media(min-width:1100px){
+ .h-qmark { font-size:150vh; width:62vw;left:-4vw;right:auto; }
+}
+@media(max-width:1099px){
+ .h-qmark {font-size:100vw;left:-3rem;bottom:-6rem;}
+ [data-theme="light"] .h-bg { background:radial-gradient(ellipse 80% 55% at 69% 42%,rgba(255,247,222,.85),transparent 80%),linear-gradient(118deg,rgba(38,51,48,.32),transparent 55%),linear-gradient(162deg,transparent 54%,rgba(61,70,63,.17) 55%,rgba(61,70,63,.04) 83%,transparent 84%); }
+}
+@media(min-width:1100px){ .h-qmark { font-size:178vh;left:-9vw;top:-5vh; } }

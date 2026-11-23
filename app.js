@@ -104,6 +104,7 @@ function pageFromHash() {
 }
 
 function goTo(page, options = {}) {
+  if (page !== 'home' && typeof finishHeroEntrance === 'function') finishHeroEntrance();
   if (!VALID_PAGES.has(page)) return;
   setFlashPageActive(page === 'home');
   const { updateHistory = true, immediate = false, restoreScrollY = null } = options;
@@ -707,17 +708,6 @@ function dismissFlashImmediately() {
 function runIntro() {
   const overlay   = document.getElementById('intro-overlay');
   const typer     = document.getElementById('intro-typewriter');
-  const eyebrow   = document.getElementById('h-eyebrow');
-  const sub       = document.getElementById('h-sub');
-  const title     = document.getElementById('h-title');
-  const qmMark    = document.getElementById('h-qm-mark');
-  const hqmark    = document.getElementById('h-qmark');
-  const divider   = document.getElementById('h-divider');
-  const cta       = document.getElementById('h-cta');
-  const scroll    = document.getElementById('h-scroll');
-  const navLogo   = document.querySelector('.n-logo');
-  const navLinks  = document.querySelectorAll('.n-links a');
-
   // Full intro text (typewriter)
   const line1 = 'في زمن كلّه ماشي';
   const line2 = 'حد لسا بيسأل..';
@@ -765,165 +755,10 @@ function runIntro() {
     }, 280);
   }
 
-  function fadeEl(el, props, duration, delay) {
-    if (!el) return;
-    setTimeout(() => {
-      el.style.transition = 'opacity ' + duration + 'ms cubic-bezier(.16,1,.3,1), transform ' + duration + 'ms cubic-bezier(.16,1,.3,1)';
-      Object.assign(el.style, props);
-    }, delay);
-  }
-
   function revealHero() {
-
-    /* ════════════════════════════════════════════════════
-       TIMELINE (ms from call)
-       ─────────────────────────────────────────────────
-        0        overlay يبدأ يتلاشى (1100ms)
-        80       العنوان "إلى أين" يطلع (950ms → ينهي ~1030)
-        680      علامة "؟" تظهر — قبل ما العنوان يخلص (750ms)
-        1100     divider "بورتفوليو أدبي" يظهر (600ms → ينهي ~1700)
-        1480     eyebrow "مشروع أدبي" يظهر — قبل divider يخلص (580ms)
-        1850     زرار "اكتشف" يظهر — قبل eyebrow يخلص
-        2800     nav يظهر في الآخر
-       ════════════════════════════════════════════════════ */
-
-    /* ── overlay ── */
     overlay.style.transition = 'opacity 1100ms cubic-bezier(.4,0,.2,1)';
     overlay.style.opacity = '0';
-    setTimeout(() => { overlay.style.display = 'none'; }, 1100);
-
-    /* ── background ؟ كبيرة — تبرز بهدوء ── */
-    setTimeout(() => {
-      hqmark.style.transition = 'opacity 2s ease';
-      hqmark.style.opacity = '.025';
-    }, 600);
-
-    /* ── ١: العنوان "إلى أين" ── */
-    title.style.transform = 'translateY(40px) scale(0.97)';
-    title.style.opacity   = '0';
-    fadeEl(title, { opacity:'1', transform:'translateY(0) scale(1)' }, 950, 80);
-
-    /* ── ٢: علامة "؟" — بتنزل وبتستقر كأنها بتكمّل السؤال ── */
-    setTimeout(() => {
-      qmMark.style.display    = 'inline-block';
-      qmMark.style.transition = 'none';
-      qmMark.style.opacity    = '0';
-      qmMark.style.transform  = 'translateY(-18px) rotate(-12deg) scale(0.78)';
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        qmMark.style.transition = [
-          'opacity 600ms ease',
-          'transform 780ms cubic-bezier(.34,1.48,.64,1)',
-        ].join(',');
-        qmMark.style.opacity   = '1';
-        qmMark.style.transform = 'translateY(0) rotate(0deg) scale(1)';
-      }));
-    }, 680);
-
-    /* ── ٣: divider "بورتفوليو أدبي" ── */
-    divider.style.transform = 'translateY(16px)';
-    divider.style.opacity   = '0';
-    fadeEl(divider, { opacity:'1', transform:'translateY(0)' }, 600, 1100);
-
-    /* ── ٤: eyebrow "مشروع أدبي لمحمد السيد" ── */
-    eyebrow.style.transform = 'translateY(14px)';
-    eyebrow.style.opacity   = '0';
-    fadeEl(eyebrow, { opacity:'1', transform:'translateY(0)' }, 580, 1480);
-
-    /* ── ٥: زرار "اكتشف" + مجموعته ── */
-    setTimeout(() => {
-      const hDisc    = document.getElementById('h-discover');
-      const discBtn  = document.getElementById('glass-disc-btn');
-      const discIcon = discBtn.querySelector('.glass-disc-icon');
-      const discLbl  = discBtn.querySelector('.glass-disc-label');
-      const discSub  = discBtn.querySelector('.glass-disc-sub');
-      const snapSub  = document.getElementById('h-snap-sub');
-
-      hDisc.style.opacity = '1';
-
-      discLbl.style.opacity    = '0';
-      discLbl.style.width      = '0';
-      discLbl.style.overflow   = 'hidden';
-      discLbl.style.whiteSpace = 'nowrap';
-      if (discSub)  discSub.style.opacity  = '0';
-      if (snapSub)  snapSub.style.opacity  = '0';
-
-      /* Phase 1 — نقطة ضوء */
-      discBtn.style.transition = 'none';
-      discBtn.style.opacity    = '1';
-      discBtn.style.transform  = 'scaleX(0.13) scaleY(0.72)';
-      discBtn.style.filter     = 'brightness(4.5) blur(2px)';
-      discBtn.style.boxShadow  = '0 0 36px 16px rgba(192,155,90,.75), 0 0 80px 24px rgba(192,155,90,.30)';
-
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-
-        /* Phase 2 — الزرار بيتمدد */
-        discBtn.style.transition = [
-          'transform 1.0s cubic-bezier(.16,1,.3,1)',
-          'filter    1.0s ease',
-          'box-shadow 1.0s ease',
-        ].join(',');
-        discBtn.style.transform = 'scaleX(1) scaleY(1)';
-        discBtn.style.filter    = 'brightness(1.55) blur(0px)';
-        discBtn.style.boxShadow = '0 0 36px 12px rgba(192,155,90,.22)';
-
-        /* Phase 3 — تايبرايتر */
-        setTimeout(() => {
-          const labelText = 'اكتشف نصًّا';
-          discLbl.style.transition = 'opacity .01s, width .38s cubic-bezier(.16,1,.3,1)';
-          discLbl.style.opacity    = '1';
-          discLbl.style.width      = discLbl.scrollWidth + 'px';
-          setTimeout(() => { discLbl.style.width = 'auto'; discLbl.style.overflow = 'visible'; }, 400);
-          discLbl.textContent = '';
-          Array.from(labelText).forEach((ch, i) => {
-            setTimeout(() => { discLbl.textContent += ch; }, i * 60);
-          });
-        }, 460);
-
-        /* Phase 4 — glow يستقر، snap cycle يبدأ */
-        setTimeout(() => {
-          discBtn.style.transition = '';
-          discBtn.style.filter     = 'brightness(1)';
-          discBtn.style.boxShadow  = '';
-          discIcon.classList.add('ember-pulsing');
-          if (discSub) {
-            discSub.style.transition = 'opacity .75s ease';
-            discSub.style.opacity    = '0.7';
-          }
-          if (snapSub) {
-            snapSub.style.transition = 'opacity .6s ease';
-            snapSub.style.opacity    = '1';
-          }
-          setTimeout(startSnapCycle, 200);
-        }, 1080);
-
-      }));
-    }, 1850);
-
-    /* ── ٦: nav — في الآخر ── */
-    setTimeout(() => {
-      if (navLogo) {
-        navLogo.style.transition = 'none';
-        navLogo.style.transform  = 'translateX(16px)';
-        navLogo.style.opacity    = '0';
-        requestAnimationFrame(() => requestAnimationFrame(() => {
-          navLogo.style.transition = 'opacity 700ms ease, transform 700ms cubic-bezier(.16,1,.3,1)';
-          navLogo.style.opacity    = '1';
-          navLogo.style.transform  = 'translateX(0)';
-        }));
-      }
-      navLinks.forEach((a, i) => {
-        a.style.transition = 'none';
-        a.style.transform  = 'translateX(-14px)';
-        a.style.opacity    = '0';
-        setTimeout(() => {
-          requestAnimationFrame(() => requestAnimationFrame(() => {
-            a.style.transition = 'opacity 600ms ease, transform 600ms cubic-bezier(.16,1,.3,1), color .3s, border-color .3s, letter-spacing .3s';
-            a.style.opacity    = '1';
-            a.style.transform  = 'translateX(0)';
-          }));
-        }, i * 100);
-      });
-    }, 2800);
+    setTimeout(() => { overlay.style.display = 'none'; playHeroEntrance(); }, 1100);
   }
 
   // Start typing after brief pause
@@ -1719,7 +1554,8 @@ initPaintings();
 initFlash();
 setNav('home');
 initReveals();
-runIntro();
+if (pageFromHash() === 'home') runIntro();
+else finishHeroEntrance();
 const initialPage = pageFromHash();
 if (initialPage !== 'home') goTo(initialPage, { updateHistory: false, immediate: true });
 else if (!window.location.hash) window.history.replaceState({ page: 'home', scrollY: 0 }, '', '#/home');
@@ -1821,7 +1657,7 @@ function copyFlashText() {
       const breathe = Math.sin(t * (2 * Math.PI / 26)) * 0.012;
       const idleNudge = idleDepth ? Math.sin(t / 7) * 0.006 : 0;
       const scale = 1 + breathe + idleNudge;
-      const opacity = 0.024 + breathe * 0.6;
+      const opacity = 0.12 + breathe * 0.6;
       qmark.style.transform = `translate(${qx.toFixed(2)}px, ${qy.toFixed(2)}px) scale(${scale.toFixed(4)})`;
       qmark.style.opacity = opacity.toFixed(4);
       requestAnimationFrame(loop);
