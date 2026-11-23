@@ -54,13 +54,6 @@ async function playHeroEntrance(){
  if(!await step('project',850))return;
  document.querySelector('.h-eyebrow').style.opacity='1';
  if(!await step('author',1000))return;
- document.querySelector('.glass-disc-label').textContent='اكتشف نصًّا';
- document.getElementById('glass-disc-btn').style.opacity='1';
- document.getElementById('h-discover').style.opacity='1';
- if(!await step('button',0))return;
- if(!reduce)await revealHeroButton();
- if(heroEntranceCanceled)return;
- await heroDelay(reduce?0:300);if(heroEntranceCanceled)return;
  document.querySelectorAll('.n-logo,.n-links a').forEach(el=>el.style.opacity='1');
  document.getElementById('h-qmark').style.opacity='.12';
  if(!await step('scene',1100))return;
@@ -68,6 +61,13 @@ async function playHeroEntrance(){
  startSnapCycle();
  if(!await step('words',1000))return;
  if(!await step('letters',1200))return;
+ document.querySelector('.glass-disc-label').textContent='اكتشف نصًّا';
+ document.getElementById('glass-disc-btn').style.opacity='1';
+ document.getElementById('h-discover').style.opacity='1';
+ if(!await step('button',0))return;
+ if(!reduce)await revealHeroButton();
+ if(heroEntranceCanceled)return;
+ await heroDelay(reduce?0:300);if(heroEntranceCanceled)return;
  clearTimeout(window.heroSafetyTimer);
  heroRoot.classList.remove('hero-choreography');
 }
