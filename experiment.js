@@ -1,26 +1,40 @@
 (() => {
  'use strict';
+ let inGallery=false;
  const root=document.documentElement,home=document.getElementById('page-home');
  const hero=document.getElementById('question-journey'),journey=document.getElementById('texts');
  const stations=[...document.querySelectorAll('.station')],washes=[...document.querySelectorAll('.station-wash>div')],stops=[...document.querySelectorAll('[data-stop]')];
  const reduce=matchMedia('(prefers-reduced-motion: reduce)');
  const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
  const smooth=x=>{x=clamp(x);return x*x*(3-2*x)};
- let ticking=false;
+ let ticking=false,staticMode=false;
+ const readingButton=document.querySelector('.reading-mode');
+ readingButton.addEventListener('click',()=>{
+  const current=Math.max(0,stations.findIndex(s=>s.getAttribute('aria-hidden')==='false'));
+  staticMode=!staticMode;journey.classList.toggle('is-static',staticMode);
+  readingButton.setAttribute('aria-pressed',String(staticMode));readingButton.textContent=staticMode?'عرض متحرك':'عرض ثابت';
+  render();
+  if(staticMode)stations[current].scrollIntoView({behavior:'instant',block:'center'});
+  else {const m=metrics();scrollTo({top:m.top+m.span*targets[current],behavior:'instant'})}
+ });
  function metrics(){return {vh:innerHeight,span:Math.max(1,journey.offsetHeight-innerHeight),top:journey.getBoundingClientRect().top+scrollY}}
  // Hold each station long enough to read, then traverse the space between paintings.
  function position(t){const x=clamp(t)*3.1;return x<.5?0:x<1.3?smooth((x-.5)/.8):x<1.8?1:x<2.6?1+smooth((x-1.8)/.8):2}
  function render(){
   ticking=false;
   if(!home.classList.contains('active'))return;
-  const reduced=reduce.matches, mobile=innerWidth<1100;
+  const reduced=reduce.matches||staticMode, mobile=innerWidth<1100;
   const hr=hero.getBoundingClientRect(),hp=clamp(-hr.top/Math.max(1,hero.offsetHeight-innerHeight));
-  hero.style.setProperty('--question-title-scale',reduced?1:1+hp*hp*(mobile?2.4:3.6));
-  hero.style.setProperty('--question-title-opacity',reduced?1:1-smooth((hp-.35)/.6));
-  hero.style.setProperty('--question-detail-opacity',reduced?1:1-smooth(hp/.42));
+  hero.style.setProperty('--question-depth',reduce.matches?'0px':hp*hp*(mobile?560:650)+'px');
+  hero.style.setProperty('--question-title-opacity',reduce.matches?1:1-smooth((hp-.35)/.6));
+  hero.style.setProperty('--question-detail-opacity',reduce.matches?1:1-smooth(hp/.42));
+  hero.querySelector('.hero').inert=!reduce.matches&&hp>.6;
   hero.style.setProperty('--question-scale',reduced?1:1+hp*.7);
   hero.style.setProperty('--question-blur',reduced?'0px':Math.max(0,hp-.55)*7+'px');
-  const m=metrics(),p=position((scrollY-m.top)/m.span),active=Math.round(p);
+  const m=metrics();
+  const galleryVisible=scrollY>=m.top-innerHeight*.2&&scrollY<m.top+journey.offsetHeight-innerHeight*.2;
+  if(galleryVisible!==inGallery){inGallery=galleryVisible;root.classList.toggle('in-station-gallery',galleryVisible);if(galleryVisible&&typeof dismissFlashImmediately==='function')dismissFlashImmediately()}
+  const p=position((scrollY-m.top)/m.span),active=Math.round(p);
   stations.forEach((station,i)=>{
    const d=i-p,visibility=1-smooth(Math.abs(d)*2.7);
    station.querySelector('.station-art').style.opacity=reduced?.8:clamp(1-Math.max(0,Math.abs(d)-.45)/.55);
