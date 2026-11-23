@@ -12,7 +12,7 @@ html {scroll-behavior:smooth}
 .journey-invite i{height:36px;width:1px;background:linear-gradient(var(--gold),transparent)}
 .hero-sequence-pending .journey-invite,.hero-choreography .journey-invite{visibility:hidden}
 .station-journey{height:460svh;position:relative;isolation:isolate;background:#0d0b09;color:#ede8de}
-.station-stage{height:100svh;position:sticky;top:0;overflow:hidden;background:#0d0b09}
+.station-stage{height:100svh;position:sticky;top:0;overflow:clip;background:#0d0b09}
 .station-wash{position:absolute;inset:0;overflow:hidden}
 .station-wash>div{position:absolute;inset:-70px;opacity:0;background-size:cover;background-position:center;filter:blur(55px) brightness(.39) saturate(.8);will-change:opacity,transform}
 .station-wash:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(13,11,9,.25),rgba(13,11,9,.25) 55%,rgba(13,11,9,.78)),linear-gradient(0deg,#0d0b09,transparent 35%,transparent 70%,rgba(13,11,9,.6))}
@@ -108,3 +108,6 @@ html {scroll-behavior:smooth}
 @media(prefers-reduced-motion:reduce) and (min-width:1100px){.station-world .station .station-art{left:10vw;width:48vw;height:100svh}}
 .in-station-gallery #flash-card{visibility:hidden;pointer-events:none}
 @media(max-width:1099px){.station[data-station="2"] .station-art img{object-position:58% 45%}.station-copy h2{text-wrap:balance}}
+/* Portrait artwork keeps its headroom on tablet-sized screens. */
+@media(min-width:600px) and (max-width:1099px) and (min-height:601px){.station-art{width:50svh;left:4vw;height:75svh}.station-art img{object-fit:cover}.station[data-station="2"] .station-art{width:100vw;left:-8vw}}
+.reading-mode:focus-visible{outline:1px solid #e5c389;outline-offset:5px}

@@ -14,7 +14,7 @@
   staticMode=!staticMode;journey.classList.toggle('is-static',staticMode);
   readingButton.setAttribute('aria-pressed',String(staticMode));readingButton.textContent=staticMode?'عرض متحرك':'عرض ثابت';
   render();
-  if(staticMode)stations[current].scrollIntoView({behavior:'instant',block:'center'});
+  if(staticMode){stations[current].scrollIntoView({behavior:'instant',block:'center'});stations[current].querySelector('.station-read').focus({preventScroll:true})}
   else {const m=metrics();scrollTo({top:m.top+m.span*targets[current],behavior:'instant'})}
  });
  function metrics(){return {vh:innerHeight,span:Math.max(1,journey.offsetHeight-innerHeight),top:journey.getBoundingClientRect().top+scrollY}}
@@ -52,6 +52,10 @@
  function request(){if(!ticking){ticking=true;requestAnimationFrame(render)}}
  addEventListener('scroll',request,{passive:true});addEventListener('resize',request,{passive:true});reduce.addEventListener('change',request);
  new MutationObserver(request).observe(home,{attributes:true,attributeFilter:['class']});
+ // A closed discovery dialog must not retain keyboard focus targets.
+ const dialog=document.getElementById('env-screen');
+ const syncDialog=()=>{dialog.inert=dialog.getAttribute('aria-hidden')==='true'};
+ new MutationObserver(syncDialog).observe(dialog,{attributes:true,attributeFilter:['aria-hidden']});syncDialog();
  const targets=[.08,.5,.91];
  stops.forEach((b,i)=>b.addEventListener('click',()=>{const m=metrics();scrollTo({top:m.top+m.span*targets[i],behavior:reduce.matches?'instant':'smooth'})}));
  document.querySelector('.journey-invite').addEventListener('click',e=>{e.preventDefault();const m=metrics();scrollTo({top:m.top,behavior:reduce.matches?'instant':'smooth'})});
