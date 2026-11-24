@@ -32,6 +32,7 @@
   hero.style.setProperty('--question-scale',reduced?1:1+hp*.7);
   hero.style.setProperty('--question-blur',reduced?'0px':Math.max(0,hp-.55)*7+'px');
   journey.style.setProperty('--gallery-entry',reduce.matches||staticMode?1:smooth((hp-.5)/.5));
+  journey.inert=!reduced&&hp<.85;
   const m=metrics();
   const galleryVisible=scrollY>=m.top-innerHeight*.2&&scrollY<m.top+journey.offsetHeight-innerHeight*.2;
   if(galleryVisible!==inGallery){inGallery=galleryVisible;root.classList.toggle('in-station-gallery',galleryVisible);if(galleryVisible&&typeof dismissFlashImmediately==='function')dismissFlashImmediately()}
