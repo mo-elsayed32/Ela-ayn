@@ -80,7 +80,7 @@ async function revealHeroButton(){
  const rect=btn.getBoundingClientRect(),parent=host.getBoundingClientRect();
  const canvas=document.createElement('canvas');canvas.className='hero-button-pixels';canvas.setAttribute('aria-hidden','true');
  Object.assign(canvas.style,{width:rect.width+'px',height:rect.height+'px',left:(rect.left-parent.left)+'px',top:(rect.top-parent.top)+'px'});
- const img=new Image();img.src='assets/hero-button-'+document.documentElement.dataset.theme+(innerWidth>480?'-wide':'')+'.png';
+ const img=new Image();img.crossOrigin='anonymous';img.src='assets/hero-button-'+document.documentElement.dataset.theme+(innerWidth>480?'-wide':'')+'.png';
  try{await Promise.race([img.decode(),heroDelay(1200).then(()=>{throw new Error('button image timeout')})]);}
  catch(e){return;}
  if(heroEntranceCanceled)return;
@@ -122,7 +122,7 @@ async function revealHeroButton(){
 async function startHeroGoldSparkles(){
  const canvas=document.getElementById('gold-sparks'),ctx=canvas.getContext('2d');
  const source=document.querySelector('#calligraphy image');
- const img=new Image();img.src=source.getAttribute('href');await img.decode();
+ const img=new Image();img.crossOrigin='anonymous';img.src=source.getAttribute('href');await img.decode();
  const map=document.createElement('canvas');map.width=1226;map.height=614;
  const mx=map.getContext('2d',{willReadFrequently:true});mx.drawImage(img,0,0);
  const pixels=mx.getImageData(0,0,1226,614).data;

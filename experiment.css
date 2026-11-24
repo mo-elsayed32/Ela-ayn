@@ -111,3 +111,6 @@ html {scroll-behavior:smooth}
 /* Portrait artwork keeps its headroom on tablet-sized screens. */
 @media(min-width:600px) and (max-width:1099px) and (min-height:601px){.station-art{width:50svh;left:4vw;height:75svh}.station-art img{object-fit:cover}.station[data-station="2"] .station-art{width:100vw;left:-8vw}}
 .reading-mode:focus-visible{outline:1px solid #e5c389;outline-offset:5px}
+
+/* Share the exit viewport rather than inserting an empty viewport between scenes. */
+@media(prefers-reduced-motion:no-preference){.station-journey:not(.is-static){margin-top:-100svh;z-index:2;opacity:var(--gallery-entry,0)}.h-title{filter:none}}
