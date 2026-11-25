@@ -32,6 +32,7 @@
 </script>
 <link rel="preload" as="image" href="assets/hero-calligraphy.jpg">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="experiment.css?v=20261124-navbar-logos">
 </head>
 <body>
 
@@ -57,6 +58,7 @@
     <p id="intro-typewriter" style="font-family:'Amiri',serif;font-size:clamp(1.1rem,2vw,1.4rem);color:var(--text2);text-align:center;line-height:2.2;direction:rtl;"></p>
   </div>
 
+  <div class="question-journey" id="question-journey">
   <section class="hero">
     <div class="h-bg"></div>
     <div class="h-rules"><span></span><span></span><span></span><span></span><span></span></div>
@@ -72,43 +74,38 @@
       </div>
       <div class="h-discover" id="h-discover" style="opacity:0;margin-top:1.6rem;">
         <button class="glass-disc-btn" id="glass-disc-btn" onclick="openDiscover()">
-          <span class="glass-disc-shimmer"></span>
-          <span class="glass-disc-icon">✦</span>
-          <span class="glass-disc-label">سافر في المحطات</span>
-          <span class="glass-disc-sub">دع النص يعثر عليك</span>
-        </button>
-      </div>
+<span class="glass-disc-shimmer"></span>
+<span class="glass-disc-icon">✦</span>
+<span class="glass-disc-label">اكتشف نصًّا</span>
+
+</button>
       <div class="h-snap-sub" id="h-snap-sub" style="opacity:0;">
         <span class="snap-sub-text" id="snap-sub-text"></span>
       </div>
-    </div>
-
-  </section>
-
-  <section class="sec" id="about" tabindex="-1">
-    <div class="rule"></div>
-    <div class="about-grid">
-      <div>
-        <div class="tag reveal">عن المشروع</div>
-        <div class="about-text">
-          <h2 class="reveal d1">مش إجابات..<br>أسئلة بتفضل معاك</h2>
-          <p class="reveal d2" style="font-family:'Amiri',serif;font-size:clamp(.95rem,1.4vw,1.1rem);color:var(--text2);line-height:2.6;font-weight:300;">
-            ما بدأتش الكتابة عشان بحبها.<br>
-            بدأت عشان ما لاقيتش مكان تاني أقول فيه اللي جوايا كما هو.
-          </p>
-          <p class="reveal d3" style="font-family:'Amiri',serif;font-size:clamp(.95rem,1.4vw,1.1rem);color:var(--text2);line-height:2.6;font-weight:300;margin-top:1.2rem;">
-            في البداية كنت بكتب عشان أطلع.<br>
-            بعدين اكتشفت إني مش بس بطلع.. بفهم.<br>
-            <em style="color:var(--text);">كل نص كان مرايا.</em><br>
-            وكلما نظرت أكتر، قل غضبي على نفسي —
-          </p>
-          <p class="reveal d4" style="font-family:'Amiri',serif;font-style:italic;font-size:clamp(1rem,1.6vw,1.2rem);color:var(--gold);line-height:2;margin-top:.8rem;">
-            لأني بدأت أفهمها
-          </p>
-        </div>
       </div>
     </div>
+
+    <a class="journey-invite" href="#texts"><span>ادخل السؤال</span><i aria-hidden="true"></i></a>
   </section>
+  </div>
+
+<section class="station-journey" id="texts" aria-label="المحطات">
+<div class="station-stage">
+<div class="station-wash" aria-hidden="true"><div style="background-image:url(assets/painting-teen.webp)"></div><div style="background-image:url(assets/painting-lahyaa.webp)"></div><div style="background-image:url(assets/painting-qadiya.webp)"></div></div><div class="station-heading"><span>المحطات</span><button aria-pressed="false" class="reading-mode" type="button">عرض ثابت</button></div><div class="station-world"><article class="station" data-station="0"><div class="station-art" aria-hidden="true"><img src="assets/painting-teen.webp" alt="" decoding="async"></div><div class="station-copy"><span class="station-num">المحطة ١</span><h2><a href="#/poem-teen" onclick="event.preventDefault();goTo('poem-teen')">مولود في الطين</a></h2><p>الكتابة مش هروب. هنا قررت أتكلم.</p><a class="station-read" href="#/poem-teen" onclick="event.preventDefault();goTo('poem-teen')">اقرأ النص <span aria-hidden="true">←</span></a></div></article><article class="station" data-station="1"><div class="station-art" aria-hidden="true"><img src="assets/painting-lahyaa.webp" alt="" decoding="async"></div><div class="station-copy"><span class="station-num">المحطة ٢</span><h2><a href="#/poem-lahyaa" onclick="event.preventDefault();goTo('poem-lahyaa')">لا حياء لمن تنادي</a></h2><p>اخترت الغضب على الصمت. فسألني: إلى أين؟</p><a class="station-read" href="#/poem-lahyaa" onclick="event.preventDefault();goTo('poem-lahyaa')">اقرأ النص <span aria-hidden="true">←</span></a></div></article><article class="station" data-station="2"><div class="station-art" aria-hidden="true"><img src="assets/painting-qadiya.webp" alt="" decoding="async"></div><div class="station-copy"><span class="station-num">المحطة ٣</span><h2><a href="#/poem-qadiya" onclick="event.preventDefault();goTo('poem-qadiya')">تلك قضية، ولسا العهد حي</a></h2><p>السؤال مش عني بس.</p><a class="station-read" href="#/poem-qadiya" onclick="event.preventDefault();goTo('poem-qadiya')">اقرأ النص <span aria-hidden="true">←</span></a></div></article></div><nav class="station-controls" aria-label="اختر محطة"><button type="button" data-stop="0" aria-label="المحطة ١: مولود في الطين"><span>١</span><i></i></button><button type="button" data-stop="1" aria-label="المحطة ٢: لا حياء لمن تنادي"><span>٢</span><i></i></button><button type="button" data-stop="2" aria-label="المحطة ٣: تلك قضية، ولسا العهد حي"><span>٣</span><i></i></button><span class="station-scroll-note">مرّر لتكمل الرحلة</span></nav></div></section>
+  <section class="sec" id="about" tabindex="-1">
+<div class="rule"></div>
+<div class="about-grid">
+<div>
+<div class="tag reveal">عن المشروع</div>
+<div class="about-text">
+<h2 class="reveal d1">أسئلة بتفضل معاك</h2>
+<p class="reveal d2" style="font-family:'Amiri',serif;font-size:clamp(.95rem,1.4vw,1.1rem);color:var(--text2);line-height:2.6;font-weight:300;">كتبت عشان أقول اللي جوايا.</p>
+<p class="reveal d3" style="font-family:'Amiri',serif;font-size:clamp(.95rem,1.4vw,1.1rem);color:var(--text2);line-height:2.6;font-weight:300;margin-top:1.2rem;">كل نص كان مرايا.<br/>فهمت نفسي؛ فقل غضبي عليها.</p>
+
+</div>
+</div>
+</div>
+</section>
 
   <div class="marquee-wrap" aria-hidden="true">
     <div class="marquee-track">
@@ -124,29 +121,6 @@
       <span class="marquee-item">في زمن كله ماشي</span><span class="marquee-item marquee-sep">✦</span>
     </div>
   </div>
-
-  <section class="sec" id="texts">
-    <div class="texts-header reveal">
-      <h2>المحطات</h2>
-      <p>كل محطة كانت لحظة تحوّل.. مش مجرد نص</p>
-    </div>
-    <a class="text-item reveal d1" href="#/poem-teen" onclick="event.preventDefault();goTo('poem-teen')" style="--ti-bg:url('assets/card-teen.webp')">
-      <div class="ti-num">١</div>
-      <div><h3 class="ti-title">مولود في الطين</h3><p class="ti-excerpt">المحطة الأولى — حين آمنت إن الكتابة مش هروب.<br>ده المكان اللي فيه قررت أتكلم.</p></div>
-      <div class="ti-arrow" aria-hidden="true">←</div>
-    </a>
-    <a class="text-item reveal d2" href="#/poem-lahyaa" onclick="event.preventDefault();goTo('poem-lahyaa')" style="--ti-bg:url('assets/card-lahyaa.webp')">
-      <div class="ti-num">٢</div>
-      <div><h3 class="ti-title">لا حياء لمن تنادي</h3><p class="ti-excerpt">المحطة التانية — حين اخترت الغضب على الصمت.<br>وعرفت إن الغضب ده اللي بيسألني: إلى أين؟</p></div>
-      <div class="ti-arrow" aria-hidden="true">←</div>
-    </a>
-    <a class="text-item reveal d3" href="#/poem-qadiya" onclick="event.preventDefault();goTo('poem-qadiya')" style="--ti-bg:url('assets/card-qadiya.webp')">
-      <div class="ti-num">٣</div>
-      <div><h3 class="ti-title">تلك قضية، ولسا العهد حي</h3><p class="ti-excerpt">المحطة التالتة — حين فهمت إن السؤال مش عني بس.<br>ده سؤال لكل واحد عايش وشايف.</p></div>
-      <div class="ti-arrow" aria-hidden="true">←</div>
-    </a>
-    <p class="texts-footer reveal">الرحلة مستمرة.. والسؤال لسا معايا</p>
-  </section>
 
   <!-- ═══ ENVELOPE DISCOVER EXPERIENCE ═══ -->
   <div id="env-screen" aria-hidden="true" aria-label="اكتشاف نص">
@@ -166,33 +140,25 @@
 
   <!-- ═══ قسم الآن ═══ -->
   <section class="sec now-section" id="now">
-    <div class="about-grid">
-      <div>
-        <div class="tag reveal">الآن</div>
-        <div class="about-text">
-          <h2 class="reveal d1">اللي أنا فيه دلوقتي</h2>
-          <p class="reveal d2" style="font-family:'Amiri',serif;font-size:clamp(.95rem,1.4vw,1.1rem);color:var(--text2);line-height:2.6;font-weight:300;">
-            بكتب عن الخوف من إن تكون نفسك وانت مش عارف مين أنت.<br>
-            بكتب عن الاغتراب — من ناس بتحبهم ومن نفسك في نفس الوقت.
-          </p>
-          <p class="reveal d3" style="font-family:'Amiri',serif;font-size:clamp(.95rem,1.4vw,1.1rem);color:var(--text2);line-height:2.6;font-weight:300;margin-top:1.2rem;">
-            السؤال اللي بيشغلني دلوقتي:<br>
-            <em style="color:var(--text);">إيه الفرق بين إنك تكون بتبحث.. وبين إنك بتهرب؟</em>
-          </p>
-          <p class="reveal d4" style="font-family:'Amiri',serif;font-style:italic;font-size:clamp(1rem,1.6vw,1.2rem);color:var(--gold);line-height:2;margin-top:.8rem;">
-            ما زلت أبحث.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
+<div class="about-grid">
+<div>
+<div class="tag reveal">الآن</div>
+<div class="about-text">
+
+<p class="reveal d2" style="font-family:'Amiri',serif;font-size:clamp(.95rem,1.4vw,1.1rem);color:var(--text2);line-height:2.6;font-weight:300;">بكتب عن الخوف من إن تكون نفسك، وانت مش عارفها.<br/>وعن الغربة، من اللي بتحبهم ومن نفسك.</p>
+<p class="reveal d3" style="font-family:'Amiri',serif;font-size:clamp(.95rem,1.4vw,1.1rem);color:var(--text2);line-height:2.6;font-weight:300;margin-top:1.2rem;"><em style="color:var(--text);">ببحث.. ولا بهرب؟</em></p>
+
+</div>
+</div>
+</div>
+</section>
 
   <section class="sec" id="contact">
     <div class="contact-grid">
       <div class="contact-left">
         <div class="tag reveal">تواصل</div>
         <h2 class="reveal d1">قولي رأيك</h2>
-        <p class="reveal d2">مش بدور على إطراء.. بدور على حد يقرأ فعلاً</p>
+        <p class="reveal d2">بدور على حد يقرأ فعلاً.</p>
       </div>
       <form class="contact-form reveal d2" action="https://formspree.io/f/mbdzgqva" method="POST" id="contact-form">
         <div class="field"><input type="text" name="name" id="cn" placeholder="x" required><label for="cn">إيه اسمك؟</label></div>
@@ -243,7 +209,7 @@
     <div class="business-left">
       <div class="tag">Business</div>
       <h3>للتعاون والأعمال</h3>
-      <p>للتواصل التجاري والشراكات</p>
+
     </div>
     <div class="business-contacts">
       <a class="business-item" href="mailto:ila.ayn.business@gmail.com">
@@ -700,8 +666,10 @@
 </div>
 
 <script src="poems-data.js"></script>
-<script src="hero-animation.js"></script>
-<script src="app.js"></script>
+<script src="hero-animation.js?v=20261124-hero-snap"></script>
+<script src="app.js?v=20261125-skip-link"></script>
+<script src="experiment.js?v=20261124-boundary-tolerance"></script>
+<script src="letter-fonts.js"></script>
 
 <!-- تلميح الوضع الليلي -->
 <div id="theme-hint">نوصي بالوضع الليلي لأفضل تجربة</div>

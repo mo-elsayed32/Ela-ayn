@@ -37,84 +37,52 @@ async function playHeroEntrance(){
   function frame(now){
    if(heroEntranceCanceled){resolve();return}
    const t=reduce?3.5:(now-heroInkAt)/1000;
-   paths.forEach(p=>{const v=Math.max(0,Math.min(1,(t-Number(p.dataset.a)*1.75)/((Number(p.dataset.b)-Number(p.dataset.a))*1.75)));p.style.strokeDashoffset=p.getTotalLength()*(1-v)});
+   paths.forEach(p=>{const v=Math.max(0,Math.min(1,(t-Number(p.dataset.a)*1.75)/((Number(p.dataset.b)-Number(p.dataset.a))*1.75)));p.style.strokeDashoffset=p.getTotalLength()*(1-(v*v*(3-2*v)))});
    if(t<3.5)requestAnimationFrame(frame);else {showHeroImage();resolve()}
   }requestAnimationFrame(frame);
  });
- await heroDelay(500);if(heroEntranceCanceled)return;
+ // The title finishes first. All supporting elements then fade together,
+ // completing within1.5s rather than a chain of delayed visibility changes.
+ if(heroEntranceCanceled)return;
+ heroRoot.classList.add('hero-choreography','hero-stage-project','hero-stage-author','hero-stage-scene','hero-stage-words','hero-stage-letters','hero-stage-button');
  heroRoot.classList.remove('hero-sequence-pending');
- heroRoot.classList.add('hero-choreography');
- const step=async(name,delay)=>{
-  if(heroEntranceCanceled)return false;
-  heroRoot.classList.add('hero-stage-'+name);
-  await heroDelay(reduce?0:delay);
-  return !heroEntranceCanceled;
- };
  document.querySelector('.h-divider').style.opacity='1';
- if(!await step('project',850))return;
  document.querySelector('.h-eyebrow').style.opacity='1';
- if(!await step('author',1000))return;
  document.querySelectorAll('.n-logo,.n-links a').forEach(el=>el.style.opacity='1');
  document.getElementById('h-qmark').style.opacity='.12';
- if(!await step('scene',1100))return;
- document.getElementById('h-snap-sub').style.opacity='1';
- startSnapCycle();
- if(!await step('words',1000))return;
- if(!await step('letters',1200))return;
+ document.getElementById('h-snap-sub').style.opacity='1';startSnapCycle();
  document.querySelector('.glass-disc-label').textContent='اكتشف نصًّا';
  document.getElementById('glass-disc-btn').style.opacity='1';
  document.getElementById('h-discover').style.opacity='1';
- if(!await step('button',0))return;
- if(!reduce)await revealHeroButton();
+ if(!reduce)await Promise.all([revealHeroButton(),heroDelay(1500)]);
  if(heroEntranceCanceled)return;
- await heroDelay(reduce?0:300);if(heroEntranceCanceled)return;
- clearTimeout(window.heroSafetyTimer);
- heroRoot.classList.remove('hero-choreography');
+ clearTimeout(window.heroSafetyTimer);heroRoot.classList.remove('hero-choreography');
 }
 
-// Temporary, alpha-bounded raster of the approved button during its entrance.
-// The real semantic button remains in the DOM and returns when the effect ends.
+// Reveal the real DOM button. The light is an SVG curve on the exact moving
+// capsule edge, not a brightened screenshot rectangle or an overlay beam.
 let cancelHeroButtonReveal=null;
 async function revealHeroButton(){
  const btn=document.getElementById('glass-disc-btn'),host=document.getElementById('h-discover');
  const rect=btn.getBoundingClientRect(),parent=host.getBoundingClientRect();
- const canvas=document.createElement('canvas');canvas.className='hero-button-pixels';canvas.setAttribute('aria-hidden','true');
- Object.assign(canvas.style,{width:rect.width+'px',height:rect.height+'px',left:(rect.left-parent.left)+'px',top:(rect.top-parent.top)+'px'});
- const img=new Image();img.src='assets/hero-button-'+document.documentElement.dataset.theme+(innerWidth>480?'-wide':'')+'.png';
- try{await Promise.race([img.decode(),heroDelay(1200).then(()=>{throw new Error('button image timeout')})]);}
- catch(e){return;}
- if(heroEntranceCanceled)return;
- canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
- const ctx=canvas.getContext('2d');if(!ctx)return;
- ctx.drawImage(img,0,0,canvas.width,canvas.height);
- let src;try{src=ctx.getImageData(0,0,canvas.width,canvas.height)}catch(e){return;}
- const out=ctx.createImageData(canvas.width,canvas.height),W=canvas.width,H=canvas.height;
- const theme=document.documentElement.dataset.theme;
- host.appendChild(canvas);btn.style.visibility='hidden';
+ const W=rect.width,H=rect.height,ns='http://www.w3.org/2000/svg';
+ const svg=document.createElementNS(ns,'svg'),path=document.createElementNS(ns,'path');
+ svg.classList.add('hero-button-edge');svg.setAttribute('viewBox',`0 0 ${W} ${H}`);svg.setAttribute('aria-hidden','true');
+ Object.assign(svg.style,{width:W+'px',height:H+'px',left:(rect.left-parent.left)+'px',top:(rect.top-parent.top)+'px'});
+ path.setAttribute('fill','none');path.setAttribute('stroke','#f4ce80');path.setAttribute('stroke-width','1.5');svg.append(path);
+ host.append(svg);btn.style.clipPath='inset(0 0 0 100% round 999px)';
  await new Promise(resolve=>{
   let raf=0,done=false;const start=performance.now();
-  const cleanup=()=>{
-   if(done)return;done=true;cancelAnimationFrame(raf);clearTimeout(safety);
-   window.removeEventListener('resize',cleanup);btn.removeEventListener('focus',cleanup);
-   canvas.remove();btn.style.visibility='';cancelHeroButtonReveal=null;resolve();
-  };
-  const safety=setTimeout(cleanup,2400);cancelHeroButtonReveal=cleanup;
+  const cleanup=()=>{if(done)return;done=true;cancelAnimationFrame(raf);clearTimeout(safety);window.removeEventListener('resize',cleanup);btn.removeEventListener('focus',cleanup);svg.remove();btn.style.clipPath='';cancelHeroButtonReveal=null;resolve()};
+  const safety=setTimeout(cleanup,2000);cancelHeroButtonReveal=cleanup;
   window.addEventListener('resize',cleanup,{once:true});btn.addEventListener('focus',cleanup,{once:true});
   function frame(now){
-   if(heroEntranceCanceled||theme!==document.documentElement.dataset.theme){cleanup();return;}
-   const t=(now-start)/1000;
-   for(let y=0;y<H;y++)for(let x=0;x<W;x++){
-    const n=(y*W+x)*4,a=src.data[n+3];if(!a)continue;
-    const noise=(Math.sin(x*.18+y*.11)+Math.sin(y*.38-x*.06))*.035;
-    const age=t-(1-x/W+noise)*1.35;
-    const reveal=Math.max(0,Math.min(1,age/.045)),heat=age<0?0:Math.max(0,1-age/.32);
-    out.data[n]=src.data[n]*(1-heat)+255*heat;
-    out.data[n+1]=src.data[n+1]*(1-heat)+205*heat;
-    out.data[n+2]=src.data[n+2]*(1-heat)+101*heat;
-    out.data[n+3]=Math.max(a,200*heat)*reveal;
-   }
-   ctx.putImageData(out,0,0);
-   if(t<1.85)raf=requestAnimationFrame(frame);else cleanup();
+   if(heroEntranceCanceled){cleanup();return}
+   const t=Math.min(1,(now-start)/1250),p=1-Math.pow(1-t,2.4),left=W*(1-p),r=Math.min(H/2,(W-left)/2),y=H/2;
+   btn.style.clipPath=`inset(0 0 0 ${left}px round ${r}px)`;
+   path.setAttribute('d',`M ${left+r} 1 Q ${left+1} 1 ${left+1} ${Math.max(r,1)} L ${left+1} ${H-r} Q ${left+1} ${H-1} ${left+r} ${H-1}`);
+   svg.style.opacity=String(Math.min(1,t*9)*Math.min(1,(1-t)*5));
+   if(t<1)raf=requestAnimationFrame(frame);else cleanup();
   }raf=requestAnimationFrame(frame);
  });
 }
@@ -122,7 +90,7 @@ async function revealHeroButton(){
 async function startHeroGoldSparkles(){
  const canvas=document.getElementById('gold-sparks'),ctx=canvas.getContext('2d');
  const source=document.querySelector('#calligraphy image');
- const img=new Image();img.src=source.getAttribute('href');await img.decode();
+ const img=new Image();img.crossOrigin='anonymous';img.src=source.getAttribute('href');await img.decode();
  const map=document.createElement('canvas');map.width=1226;map.height=614;
  const mx=map.getContext('2d',{willReadFrequently:true});mx.drawImage(img,0,0);
  const pixels=mx.getImageData(0,0,1226,614).data;
@@ -135,7 +103,7 @@ async function startHeroGoldSparkles(){
   const t=(now-heroInkAt)/1000,dt=Math.max(0,Math.min(.04,(now-last)/1000));last=now;
   ctx.clearRect(0,0,950,614);
   for(const p of paths){const a=+p.dataset.a*1.75,b=+p.dataset.b*1.75,v=(t-a)/(b-a);if(v<0||v>1)continue;
-   const pt=p.getPointAtLength(p.getTotalLength()*v),rad=+p.getAttribute('stroke-width')*.5;
+   const u=v*v*(3-2*v),pt=p.getPointAtLength(p.getTotalLength()*u),rad=+p.getAttribute('stroke-width')*.5;
    for(let k=0;k<36;k++){let x=pt.x+(rand()-.5)*rad*1.8,y=pt.y+(rand()-.5)*rad*1.8;if(!isGold(x,y))continue;
     particles.push({x:x-100,y,age:0,life:.22+rand()*.30,r:1.6+rand()*3.1,vx:(rand()-.5)*10,vy:-8-rand()*15,star:rand()>.79});
    }
